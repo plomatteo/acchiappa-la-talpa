@@ -160,7 +160,7 @@ td {
     }
     .gameButton {
         font-size: 17px;
-        padding: 26px;
+        padding: 20px;
         border-radius: 10px;
         border: none;
         border-radius: 10px;
@@ -172,10 +172,11 @@ td {
     h1 {
         text-align: CENTER;
         padding-right: 0px;
-        font-size: 36px;
+        font-size: 30px;
     }
     #textArea {
         padding-right: 0px;
         text-align: center;
+        font-size: 22px;
     }
 }
