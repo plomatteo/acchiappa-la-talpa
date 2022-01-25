@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="col-30">
+            <h1>Acchiappa il papero</h1>
+            <div id="buttonArea">
+                <button class="gameButton" onclick="startNewGame()">
+                    New game
+                </button>
+            </div>
+            <div id="textArea">
+                <p>Score:<span id="testo">0</span></p>
+                <p>Time:<span id="tempo">30</span></p>
+            </div>
+        </div>
+        <div id="gameField" class="col-60">
+        </div>
+    </div>
+
+    <script>
+
+        //CREO IL GAMEFIELD
+        var tableSize = 3;
+        var score = 0;
+        var speed = 1000;
+        var myIntervall;
+        var myTime;
+        var timeOut = false;
+        const max = tableSize * tableSize;
+
+        //LA FUNZIONE CREA IL CAMPO DA GIOCO
+        const createGameField = (tableSize) => {
+            let grid = `<table> <tr>`;
+            const rows = tableSize * tableSize
+            for (let i = 1; i <= rows; i++) {
+                grid += `<td id="${i}" onclick="checkPoint(${i})"></td>`;
+                if (i % Math.sqrt(rows) == 0 && i != rows) {
+                    grid += `</tr><tr>`;
+                    console.log("riga")
+                }
+                else if (i == rows) { console.log("chiusura table"); grid += `</tr></table>` };
+            }
+            grid += `</table>`;
+            document.getElementById('gameField').innerHTML = grid;
+        }
+
+        createGameField(tableSize);
+
+        const createNewBug = (max, speed) => {
+            //PRIMA DI CREARE UN NUOVO BUG PULISCE LE CASELLE DALLE CLASSI PRECEDENTEMENTE ASSENGATE
+            if (timeOut) {
+                myIntervall = setInterval(() => {
+                    for (i = 1; i <= max; i++) {
+                        document.getElementById(i).classList.remove("papero", "faraona")
+                    };
+                    const ID = Math.floor(Math.random() * (max) + 1);
+                    document.getElementById(ID).classList.add("papero");
+                }, speed);
+            }
+        }
+
+        const startNewGame = () => {
+            let timer = 30;
+            timeOut = true;
+            score = 0;
+            speed = 1000;
+            clearInterval(myTime);
+            createNewBug(max, speed);
+
+            myTime = setInterval(() => {
+                if (timer > 0) {
+                    timer--;
+                }
+                else {
+                    timer = 0;
+                    clearInterval(myTime);
+                    clearInterval(myIntervall);
+                    timeOut = false;
+                };
+                document.getElementById("tempo").innerText = timer;
+            }, 1000);
+        }
+
+        const checkPoint = (Id) => {
+            if (timeOut) {
+                const check = document.getElementById(Id);
+                if (check.classList.contains("papero")) {
+                    check.classList.add("faraona");
+                    scoreCounter(2);
+                }
+                else {
+                    scoreCounter(-1);
+                    console.log("non colpito")
+                };
+            }
+        }
+
+        const scoreCounter = (point) => {
+            if (timeOut) {
+                score +=point;
+                document.getElementById("testo").innerText = score;
+            }
+            setSpeed(score);
+        }
+
+        const setSpeed = (score) => {
+            if (score >= 20) {
+                    speed = 100;
+                }
+                else if (score >= 10) {
+                    speed = 200;
+                }
+                else if (score >= 0) { speed = 1000; }
+        }
+
+
+
+
+
+    </script>
+</body>
+
+</html>
