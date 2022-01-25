@@ -19,8 +19,7 @@
                 </button>
             </div>
             <div id="textArea">
-                <p>Score:<span id="testo">0</span></p>
-                <p>Time:<span id="tempo">30</span></p>
+                <p>Score:<span id="testo">0</span>&nbsp&nbsp Time: <span id="tempo">30</span></p>
             </div>
         </div>
         <div id="gameField" class="col-60">
@@ -30,10 +29,9 @@
     <script>
 
         //CREO IL GAMEFIELD
-        var tableSize = 3;
+        var tableSize = 4;
         var score = 0;
-        var speed = 1000;
-        var myIntervall;
+        var movementIntervalBug;
         var myTime;
         var timeOut = false;
         const max = tableSize * tableSize;
@@ -48,7 +46,9 @@
                     grid += `</tr><tr>`;
                     console.log("riga")
                 }
-                else if (i == rows) { console.log("chiusura table"); grid += `</tr></table>` };
+                else if (i == rows) {
+                    grid += `</tr></table>`
+                };
             }
             grid += `</table>`;
             document.getElementById('gameField').innerHTML = grid;
@@ -56,16 +56,16 @@
 
         createGameField(tableSize);
 
-        const createNewBug = (max, speed) => {
+        const createNewBug = (max) => {
             //PRIMA DI CREARE UN NUOVO BUG PULISCE LE CASELLE DALLE CLASSI PRECEDENTEMENTE ASSENGATE
             if (timeOut) {
-                myIntervall = setInterval(() => {
+                movementIntervalBug = setInterval(() => {
                     for (i = 1; i <= max; i++) {
                         document.getElementById(i).classList.remove("papero", "faraona")
                     };
                     const ID = Math.floor(Math.random() * (max) + 1);
                     document.getElementById(ID).classList.add("papero");
-                }, speed);
+                }, 700);
             }
         }
 
@@ -73,18 +73,21 @@
             let timer = 30;
             timeOut = true;
             score = 0;
-            speed = 1000;
             clearInterval(myTime);
-            createNewBug(max, speed);
+            clearInterval(movementIntervalBug);
+            createNewBug(max);
+            timerFunc(timer);
+            document.getElementById("testo").innerText = score;
+        }
 
-            myTime = setInterval(() => {
+        const timerFunc = (timer) => {
+            myTime= setInterval(() => {
                 if (timer > 0) {
                     timer--;
                 }
                 else {
-                    timer = 0;
                     clearInterval(myTime);
-                    clearInterval(myIntervall);
+                    clearInterval(movementIntervalBug);
                     timeOut = false;
                 };
                 document.getElementById("tempo").innerText = timer;
@@ -98,9 +101,8 @@
                     check.classList.add("faraona");
                     scoreCounter(2);
                 }
-                else {
+                else if (score>0){
                     scoreCounter(-1);
-                    console.log("non colpito")
                 };
             }
         }
@@ -110,22 +112,7 @@
                 score +=point;
                 document.getElementById("testo").innerText = score;
             }
-            setSpeed(score);
         }
-
-        const setSpeed = (score) => {
-            if (score >= 20) {
-                    speed = 100;
-                }
-                else if (score >= 10) {
-                    speed = 200;
-                }
-                else if (score >= 0) { speed = 1000; }
-        }
-
-
-
-
 
     </script>
 </body>
